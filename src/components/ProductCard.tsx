@@ -5,15 +5,24 @@ import { useStore } from '@/lib/store';
 import Image from 'next/image';
 
 interface ProductCardProps {
-  product: Product;
+  product: Product & { badge?: string };
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
   const addToCart = useStore((state) => state.addToCart);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="relative h-64 w-full">
+    <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-shadow relative">
+      {product.badge && (
+        <div className={`absolute top-4 left-4 px-3 py-1 text-sm font-medium rounded z-10 ${
+          product.badge === 'Best Seller' ? 'bg-red-500 text-white' :
+          product.badge.includes('Extra') ? 'bg-green-600 text-white' :
+          'bg-gray-800 text-white'
+        }`}>
+          {product.badge}
+        </div>
+      )}
+      <div className="relative h-64 w-full bg-gray-50">
         <Image
           src={product.image || '/placeholder-product.jpg'}
           alt={product.name}
@@ -34,7 +43,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             ${product.price}
           </span>
           <span className="text-sm text-gray-500">
-            Stock: {product.stock}
+            {product.stock} Colour
           </span>
         </div>
         <button
